@@ -9,6 +9,7 @@
   "cSpell.words": [
     "bitnami",
     "initdb",
-    "postgresql"
+    "postgresql",
+    "uuidv"
   ]
 }
