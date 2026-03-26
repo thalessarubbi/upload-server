@@ -1,3 +1,4 @@
+import { uploadImage } from '@/app/functions/upload-image'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import type { FastifyPluginAsync } from 'fastify'
@@ -13,9 +14,7 @@ export const uploadImageRoute: FastifyPluginAsync = async server => {
         consumes: ['multipart/form-data'],
         response: {
           201: z.object({ uploadId: z.string() }),
-          409: z
-            .object({ message: z.string() })
-            .describe('Upload already exists'),
+          400: z.object({ message: z.string() }),
         },
       },
     },
@@ -26,7 +25,15 @@ export const uploadImageRoute: FastifyPluginAsync = async server => {
         },
       })
 
-      console.log(uploadedFile)
+      if (!uploadedFile) {
+        return reply.status(400).send({ message: 'File is required' })
+      }
+
+      await uploadImage({
+        fileName: uploadedFile.filename,
+        contentType: uploadedFile.mimetype,
+        contentStream: uploadedFile.file,
+      })
 
       return reply.status(201).send({ uploadId: '<UPLOAD_ID>' })
     }
