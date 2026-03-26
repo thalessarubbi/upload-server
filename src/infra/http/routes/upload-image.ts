@@ -10,10 +10,7 @@ export const uploadImageRoute: FastifyPluginAsync = async server => {
       schema: {
         summary: 'Upload an image',
         description: 'Endpoint to upload an image file',
-        body: z.object({
-          name: z.string(),
-          password: z.string().optional(),
-        }),
+        consumes: ['multipart/form-data'],
         response: {
           201: z.object({ uploadId: z.string() }),
           409: z
@@ -23,11 +20,13 @@ export const uploadImageRoute: FastifyPluginAsync = async server => {
       },
     },
     async (request, reply) => {
-      await db.insert(schema.uploads).values({
-        name: 'example.jpg',
-        remoteKey: 'unique-remote-key',
-        remoteUrl: 'https://example.com/uploads/example.jpg',
+      const uploadedFile = await request.file({
+        limits: {
+          fileSize: 1024 * 1024 * 2, // 2MB
+        },
       })
+
+      console.log(uploadedFile)
 
       return reply.status(201).send({ uploadId: '<UPLOAD_ID>' })
     }
