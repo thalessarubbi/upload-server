@@ -88,11 +88,30 @@ http://localhost:3333/docs
 
 You can explore all endpoints, inspect request/response schemas, and execute requests directly from the UI.
 
+## Building for Production
+
+The project uses [tsup](https://tsup.egoist.dev) to bundle the TypeScript source into ESM output.
+
+```bash
+pnpm build
+```
+
+The compiled files are written to the `dist/` directory. The build entry covers the entire `src/` tree, so the output mirrors the source structure.
+
+To start the compiled server:
+
+```bash
+node dist/infra/http/server.js
+```
+
+> **tsup config** ([tsup.config.ts](tsup.config.ts)): entry `src/**/*.ts`, format `esm`, output `dist/`, `clean: true` (wipes `dist/` before each build).
+
 ## Scripts
 
 | Command | Description |
 |---|---|
 | `pnpm dev` | Start development server with hot reload |
+| `pnpm build` | Compile TypeScript to `dist/` via tsup |
 | `pnpm test` | Run tests once |
 | `pnpm test:watch` | Run tests in watch mode |
 | `pnpm db:generate` | Generate a new Drizzle migration |
