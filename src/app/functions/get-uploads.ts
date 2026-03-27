@@ -26,7 +26,7 @@ type GetUploadsOutput = {
   total: number
 }
 
-export async function uploadImage(
+export async function getUploads(
   input: GetUploadsImageInput
 ): Promise<Either<never, GetUploadsOutput>> {
   const { searchQuery, sortBy, sortDirection, page, pageSize } =
