@@ -26,6 +26,7 @@ export async function exportUploads(
 
   const { sql, params } = db
     .select({
+      id: schema.uploads.id,
       name: schema.uploads.name,
       remoteKey: schema.uploads.remoteKey,
       remoteUrl: schema.uploads.remoteUrl,
@@ -45,8 +46,7 @@ export async function exportUploads(
     columns: [
       { key: 'id', header: 'ID' },
       { key: 'name', header: 'Name' },
-      { key: 'remote_key', header: 'Remote Key' },
-      { key: 'remote_url', header: 'Remote URL' },
+      { key: 'remote_url', header: 'URL' },
       { key: 'created_at', header: 'Created At' },
     ],
   })
