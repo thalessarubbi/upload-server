@@ -13,6 +13,7 @@ export const uploadImageRoute: FastifyPluginAsync = async server => {
         summary: 'Upload an image',
         description: 'Endpoint to upload an image file',
         consumes: ['multipart/form-data'],
+        tags: ['Uploads'],
         response: {
           201: z.null().describe('Image uploaded'),
           400: z.object({ message: z.string() }),
