@@ -1,11 +1,50 @@
+x-app-env: &app-env
+  - PORT=$PORT
+  - DATABASE_URL=postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@pg:$POSTGRES_PORT/$POSTGRES_DB
+  - CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID
+  - CLOUDFLARE_ACCESS_KEY_ID=$CLOUDFLARE_ACCESS_KEY_ID
+  - CLOUDFLARE_SECRET_ACCESS_KEY=$CLOUDFLARE_SECRET_ACCESS_KEY
+  - CLOUDFLARE_BUCKET=$CLOUDFLARE_BUCKET
+  - CLOUDFLARE_PUBLIC_URL=$CLOUDFLARE_PUBLIC_URL
+
 services:
   pg:
     image: bitnami/postgresql:latest
+    restart: unless-stopped
+    container_name: upload-postgres
     ports:
-      - '5432:5432'
+      - '$POSTGRES_PORT:$POSTGRES_PORT'
     environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=upload
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
     volumes:
       - './docker:/docker-entrypoint-initdb.d'
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', '$POSTGRES_USER', '-d', '$POSTGRES_DB']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build:
+      context: .
+      target: migrate
+    container_name: upload-migrate
+    depends_on:
+      pg:
+        condition: service_healthy
+    environment: *app-env
+
+  app:
+    build: .
+    depends_on:
+      pg:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    container_name: upload-server
+    ports:
+      - '$PORT:$PORT'
+    environment: *app-env

@@ -19,7 +19,7 @@ export const exportUploadsRoute: FastifyPluginAsync = async server => {
         tags: ['Uploads'],
         querystring: QuerySchema,
         response: {
-          200: z.object({
+          201: z.object({
             report: z.string().url(),
           }),
         },
