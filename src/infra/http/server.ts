@@ -1,3 +1,4 @@
+import { env } from '@/env'
 import fastifyCors from '@fastify/cors'
 import fastifyMultipart from '@fastify/multipart'
 import fastifySwagger from '@fastify/swagger'
@@ -9,10 +10,10 @@ import {
   validatorCompiler,
 } from 'fastify-type-provider-zod'
 import { exportUploadsRoute } from './routes/export-uploads'
+import { getHealthRoute } from './routes/get-health'
 import { getUploadsRoute } from './routes/get-uploads'
 import { uploadImageRoute } from './routes/upload-image'
 import { transformSwaggerSchema } from './transform-swagger-schema'
-import { env } from '@/env'
 
 const server = fastify()
 
@@ -55,6 +56,7 @@ server.register(fastifySwaggerUi, {
 })
 
 server.register(uploadImageRoute)
+server.register(getHealthRoute)
 server.register(getUploadsRoute)
 server.register(exportUploadsRoute)
 
