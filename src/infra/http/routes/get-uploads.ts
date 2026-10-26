@@ -29,7 +29,7 @@ export const getUploadsRoute: FastifyPluginAsync = async server => {
                 id: z.string(),
                 name: z.string(),
                 remoteKey: z.string(),
-                remoteUrl: z.string().url(),
+                remoteUrl: z.url(),
                 createdAt: z.date(),
               })
             ),
