@@ -87,3 +87,12 @@ jobs:
           task-definition: .aws/task-definition.json
           container-name: upload-server
           image: ${{steps.login-ecr.outputs.registry}}/${{ vars.ECR_REPOSITORY }}:${{ steps.generate-tag.outputs.sha }}
+
+      - name: Deploy to Amazon ECS
+        id: deploy-to-ecs
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
+          service: upload-server-service
+          cluster: upload-server-ecs
+          wait-for-service-stability: true
