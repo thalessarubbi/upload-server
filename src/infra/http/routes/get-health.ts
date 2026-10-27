@@ -11,14 +11,14 @@ export const getHealthRoute: FastifyPluginAsync = async server => {
         tags: ['Health'],
         response: {
           200: z.object({
-            status: z.enum(['ok', 'unhealthy']),
+            status: z.enum(['healthy', 'unhealthy']),
           }),
         },
       },
     },
 
     async (_, reply) => {
-      return reply.status(200).send({ status: 'ok' })
+      return reply.status(200).send({ status: 'healthy' })
     }
   )
 }
