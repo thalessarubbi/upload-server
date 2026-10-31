@@ -1,3 +1,4 @@
+import { log } from '@/infra/observability/logger'
 import type { FastifyPluginAsync } from 'fastify'
 import { z } from 'zod'
 
@@ -18,6 +19,7 @@ export const getHealthRoute: FastifyPluginAsync = async server => {
     },
 
     async (_, reply) => {
+      log.info('Server returned healthy')
       return reply.status(200).send({ status: 'healthy' })
     }
   )
